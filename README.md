@@ -1,6 +1,6 @@
 # Dockerized Web IDEs
 
-# Always current webstorm and cllion in Docker Container
+# Always current WebStorm and CLion in Docker Container
 
 # What does it do?
 Runs Webstorm or CLion (JetBrains) in a docker container.
