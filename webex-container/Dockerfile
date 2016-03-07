@@ -1,0 +1,52 @@
+FROM ubuntu:14.04
+
+VOLUME /Applications
+
+ENV DEBIAN_FRONTEND=noninteractive 
+
+RUN apt-get install -y curl
+RUN apt-get install -y software-properties-common
+RUN dpkg --add-architecture i386
+
+RUN add-apt-repository ppa:webupd8team/java
+RUN apt-get update
+RUN apt-get install -y firefox:i386 libxtst6:i386
+
+RUN echo "oracle-java8-installer  shared/accepted-oracle-license-v1-1 boolean true" > /tmp/oracle-license-debconf
+RUN /usr/bin/debconf-set-selections /tmp/oracle-license-debconf
+RUN rm /tmp/oracle-license-debconf
+
+# Force 32bit version of JDK
+RUN cp /usr/bin/dpkg /usr/bin/dpkgsave
+COPY uname /usr/bin/dpkg
+
+# Install Oracle JDK 8
+RUN apt-get -q -y install oracle-java8-installer oracle-java8-set-default
+
+RUN mv /usr/bin/dpkgsave /usr/bin/dpkg
+
+RUN apt-get install -y libxrender-dev libxtst-dev git python build-essential 
+
+
+# Replace 1000 with your user / group id
+RUN export uid=1000 gid=1000 && \
+    mkdir -p /home/developer && \
+    echo "developer:x:${uid}:${gid}:developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
+    echo "developer:x:${uid}:" >> /etc/group && \
+    echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
+    chmod 0440 /etc/sudoers.d/developer && \
+    chown ${uid}:${gid} -R /home/developer
+
+RUN apt-get install -y gnome-terminal
+RUN apt-get install -y pulseaudio:i386
+RUN apt-get install -y ubuntu-restricted-extras flashplugin-installer
+
+COPY start.sh /start.sh
+
+WORKDIR /home/developer
+WORKDIR /home/developer
+USER developer
+ENV HOME /home/developer
+
+ENTRYPOINT ["/bin/bash"]
+

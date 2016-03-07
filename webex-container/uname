@@ -1,0 +1,21 @@
+#!/bin/bash
+ARR=( "$@" )
+if [[ "${ARR[0]}" == "--print-architecture" ]]; then
+	echo 'i686'
+else
+	eval "/usr/bin/dpkgsave ${ARR[@]}"
+fi
+#
+#if [ -e "/tmp/4" ]; then
+#	mv /usr/bin/dpkgsave /usr/bin/dpkg > /dev/null
+#fi
+#if [ -e "/tmp/3" ]; then
+#	touch "/tmp/4"
+#fi
+#if [ -e "/tmp/2" ]; then
+#	touch "/tmp/3"
+#fi
+#if [ -e "/tmp/1" ]; then
+#	touch "/tmp/2"
+#fi
+#touch "/tmp/1"
